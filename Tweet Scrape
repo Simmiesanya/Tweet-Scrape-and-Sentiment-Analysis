@@ -1,0 +1,31 @@
+#Use SNScrape to get tweets from twitter.
+
+import snscrape
+import snscrape.modules.twitter as sntwitter
+import pandas as pd
+
+# Define the search query and date range
+query = "(the search word) until:2022-10-04 since:2022-09-30"  # The 'since' and 'until' indicate the start and end date
+
+tweets = []
+limit = 100000
+
+# Iterate over the tweets using the TwitterSearchScraper
+for tweet in sntwitter.TwitterSearchScraper(query).get_items():
+
+    # Uncomment the following lines to print the tweet object and break the loop
+    # print(vars(tweet))
+    # break
+
+    # Check if the limit has been reached
+    if len(tweets) == limit:
+        break
+    else:
+        # Append relevant tweet information to the 'tweets' list
+        tweets.append([tweet.date, tweet.user.username, tweet.content, tweet.likeCount, tweet.retweetCount, tweet.replyCount, tweet.quoteCount])
+
+# Create a DataFrame from the collected tweets
+df = pd.DataFrame(tweets, columns=['Date', 'UserID', 'Tweet', 'Likes', 'Retweets', 'Replies', 'Quotes'])
+
+# Display the first 5 rows of the DataFrame
+df.head(5)
